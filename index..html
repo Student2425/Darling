@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Pink Dream | For You</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #fff5f8 0%, #fff0f5 50%, #ffe4e1 100%);
+            --primary-pink: #ffc4d6;
+            --dark-rose: #d68c9e;
+            --ivory: #ffffff;
+            --rose-gold: #c79a9a;
+            --text-main: #6d5454;
+            --glass: rgba(255, 255, 255, 0.65);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.8);
+            --shadow: 0 8px 32px rgba(214, 140, 158, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-gradient);
+            font-family: 'Nunito', sans-serif;
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Typography */
+        h1, h2, h3, .serif {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+            color: var(--dark-rose);
+        }
+
+        /* Glass Cards */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: var(--glass-border);
+            border-radius: 35px;
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transform: scale(0.95);
+            display: none;
+            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .card.active {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Buttons */
+        .btn {
+            background: white;
+            color: var(--dark-rose);
+            border: 1px solid white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 25px;
+            box-shadow: 0 4px 15px rgba(214, 140, 158, 0.2);
+        }
+
+        .btn:hover {
+            background: var(--primary-pink);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Floating Hearts Animation */
+        .bg-hearts {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .heart-flake {
+            position: absolute;
+            color: rgba(255, 196, 214, 0.3);
+            font-size: 20px;
+            animation: floatUp linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Specific Page Styles */
+        .comp-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .comp-card {
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            transition: 0.3s;
+            cursor: default;
+        }
+        .comp-card:hover { transform: scale(1.05); background: var(--primary-pink); color: white; }
+
+        .wheel-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid var(--primary-pink);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 20px solid var(--dark-rose);
+            z-index: 10;
+        }
+
+        .heart-btn {
+            font-size: 4rem;
+            color: var(--primary-pink);
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .heart-btn:active { transform: scale(0.8); }
+
+        .music-toggle {
+            position: fixed;
+            top: 20px; right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            z-index: 100;
+            color: var(--dark-rose);
+        }
+
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="https://ia800504.us.archive.org/33/items/ErikSatieGymnopedieNo1/ErikSatieGymnopedieNo1.mp3" type="audio/mp3">
+    </audio>
+
+    <div class="bg-hearts" id="bg-hearts"></div>
+    <div class="music-toggle" onclick="toggleMusic()"><i class="fas fa-music"></i></div>
+
+    <div class="container">
+
+        <div class="card active" id="p1">
+            <i class="fas fa-heart" style="font-size: 2.5rem; color: var(--primary-pink); margin-bottom: 20px;"></i>
+            <h1 style="font-size: 2.5rem;">Hello, Darling.</h1>
+            <p style="margin-top: 15px; font-size: 1.1rem; line-height: 1.6;">
+                I built a quiet, pink world just for us.<br>
+                Take a deep breath. You are safe here.
+            </p>
+            <button class="btn" onclick="nextPage(2); startMusic()">Step into Love</button>
+        </div>
+
+        <div class="card" id="p2">
+            <h2 class="serif">My Heart...</h2>
+            <div style="max-height: 200px; overflow-y: auto; margin: 20px 0; font-style: italic; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; line-height: 1.8;">
+                "I don't need the whole world to love me,<br>
+                I just need you.<br><br>
+                Your happiness is my favorite color.<br>
+                Your peace is my favorite place.<br>
+                Thank you for being my softest safe haven."
+            </div>
+            <button class="btn" onclick="nextPage(3)">See What I Love</button>
+        </div>
+
+        <div class="card" id="p3">
+            <h2 class="serif">You Are...</h2>
+            <div class="comp-grid">
+                <div class="comp-card">So Gentle 🌸</div>
+                <div class="comp-card">My Peace ☁️</div>
+                <div class="comp-card">Adorably Cute 🎀</div>
+                <div class="comp-card">Pure Magic ✨</div>
+            </div>
+            <button class="btn" onclick="nextPage(4)">Open Daily Note</button>
+        </div>
+
+        <div class="card" id="p4">
+            <h2 class="serif">A Note For You</h2>
+            <div onclick="openEnvelope()" style="cursor: pointer; margin: 30px 0;">
+                <i id="env-icon" class="fas fa-envelope" style="font-size: 4rem; color: var(--primary-pink); transition: 0.5s;"></i>
+                <p id="env-text" style="margin-top: 15px; font-weight: 600;">Tap to Open</p>
+            </div>
+            <div id="next-btn-4" style="display: none;">
+                <button class="btn" onclick="nextPage(5)">Let's Play</button>
+            </div>
+        </div>
+
+        <div class="card" id="p5">
+            <h2 class="serif">Playtime 🎀</h2>
+            <p>I put some love into these little games.<br>Just for you to smile.</p>
+            <div style="font-size: 3rem; margin: 20px 0;">
+                🧸 🎮 🎲
+            </div>
+            <button class="btn" onclick="nextPage(6)">Spin the Wheel</button>
+        </div>
+
+        <div class="card" id="p6">
+            <h3 class="serif">What do you need today?</h3>
+            <div class="wheel-container" style="margin-top: 20px;">
+                <div class="pointer"></div>
+                <div class="wheel" id="wheel">
+                    <i class="fas fa-heart" style="font-size: 3rem; color: var(--dark-rose);"></i>
+                </div>
+            </div>
+            <p id="spin-result" style="margin-top: 20px; font-weight: bold; min-height: 25px;"></p>
+            <button class="btn" onclick="spinWheel()">Spin</button>
+            <br>
+            <button class="btn" onclick="nextPage(7)" style="background: transparent; color: var(--text-main); border: none; box-shadow: none; font-size: 0.9rem;">Next Activity</button>
+        </div>
+
+        <div class="card" id="p7">
+            <h2 class="serif">Soft Words</h2>
+            <div style="background: white; padding: 20px; border-radius: 20px; margin: 20px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <p class="serif" style="font-size: 1.4rem; font-style: italic;">
+                    "Like a flower<br>needs the sun,<br>I need you."
+                </p>
+            </div>
+            <button class="btn" onclick="nextPage(8)">Generate Love</button>
+        </div>
+
+        <div class="card" id="p8">
+            <h2 class="serif">Instant Love</h2>
+            <div id="gen-box" style="margin: 30px 0; min-height: 50px;">
+                Tap the button...
+            </div>
+            <button class="btn" onclick="genMessage()">Send Me Love ✨</button>
+            <br>
+            <button class="btn" onclick="nextPage(9)" style="background: transparent; color: var(--text-main); border: none; box-shadow: none; font-size: 0.9rem;">Continue</button>
+        </div>
+
+        <div class="card" id="p9">
+            <h2 class="serif">Send Hearts</h2>
+            <p>Tap the heart as much as you love me!</p>
+            <div class="heart-btn" onclick="tapHeart()">❤️</div>
+            <p id="heart-count" style="margin-top: 15px; font-weight: bold;">Hearts sent: 0</p>
+            <button class="btn" onclick="nextPage(10)">Finish</button>
+        </div>
+
+        <div class="card" id="p10">
+            <h1 class="serif" style="font-size: 3rem; color: var(--dark-rose);">Quietly.</h1>
+            <p style="margin: 20px 0; font-size: 1.2rem;">
+                Love doesn't shout.<br>
+                It stays.<br><br>
+                And I am staying.
+            </p>
+            <p style="font-size: 0.9rem; opacity: 0.7;">Forever yours.</p>
+            <button class="btn" onclick="nextPage(1)">Replay Dream</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Navigation ---
+        function nextPage(id) {
+            document.querySelectorAll('.card').forEach(c => {
+                c.classList.remove('active');
+                setTimeout(() => c.style.display = 'none', 500);
+            });
+            setTimeout(() => {
+                const el = document.getElementById('p' + id);
+                el.style.display = 'block';
+                setTimeout(() => el.classList.add('active'), 50);
+            }, 500);
+        }
+
+        // --- Music Logic ---
+        const audio = document.getElementById('bg-music');
+        function startMusic() {
+            audio.volume = 0.5; // Soft volume
+            // Attempt to play
+            var promise = audio.play();
+            if (promise !== undefined) {
+                promise.then(_ => {
+                    console.log("Music started!");
+                }).catch(error => {
+                    console.log("Autoplay prevented. User interaction needed.");
+                });
+            }
+        }
+        function toggleMusic() {
+            if (audio.paused) audio.play(); else audio.pause();
+        }
+
+        // --- Animations (Floating Hearts) ---
+        function createHearts() {
+            const container = document.getElementById('bg-hearts');
+            for(let i=0; i<20; i++) {
+                const h = document.createElement('div');
+                h.className = 'heart-flake';
+                h.innerHTML = '❤';
+                h.style.left = Math.random() * 100 + '%';
+                h.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                h.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(h);
+            }
+        }
+        createHearts();
+
+        // --- Page 4: Envelope ---
+        function openEnvelope() {
+            document.getElementById('env-icon').classList.replace('fa-envelope', 'fa-envelope-open-text');
+            document.getElementById('env-text').innerText = "You are the best thing that ever happened to me.";
+            document.getElementById('next-btn-4').style.display = 'block';
+        }
+
+        // --- Page 6: Spinner ---
+        function spinWheel() {
+            const wheel = document.getElementById('wheel');
+            const result = document.getElementById('spin-result');
+            // Random spin degree
+            const deg = Math.floor(Math.random() * 1000) + 1000;
+            wheel.style.transform = `rotate(${deg}deg)`;
+            result.innerText = "Spinning...";
+            
+            setTimeout(() => {
+                const opts = ["A Hug 🤗", "A Kiss 💋", "Chocolate 🍫", "Cuddles 🧸", "A Date 🌹"];
+                result.innerText = "You won: " + opts[Math.floor(Math.random() * opts.length)];
+            }, 3000);
+        }
+
+        // --- Page 8: Generator ---
+        function genMessage() {
+            const msgs = ["You glow differently.", "I adore you.", "My favorite human.", "Cutie pie."];
+            document.getElementById('gen-box').innerText = msgs[Math.floor(Math.random() * msgs.length)];
+        }
+
+        // --- Page 9: Heart Tapper ---
+        let count = 0;
+        function tapHeart() {
+            count++;
+            document.getElementById('heart-count').innerText = "Hearts sent: " + count;
+        }
+
+    </script>
+</body>
+</html>
